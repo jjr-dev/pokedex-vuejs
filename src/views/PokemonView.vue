@@ -83,13 +83,12 @@
     display: flex;
     align-items: center;
     width: 100%;
-    margin-top: -10%;
 }
 
 .cover img {
     width: 50%;
     margin: 0 auto;
-    margin-bottom: -10%;
+    margin-bottom: -15%;
 }
 
 .infos {
@@ -153,12 +152,14 @@ const { params } = getCurrentInstance().proxy.$route
 const pokemonInfos = ref({})
 
 onMounted(() => {
-    PokeApi.get(`pokemon/${params.name}`).then((response) => {
+    PokeApi.get(`pokemon/${params.id}`).then((response) => {
         const { data } = response
 
         pokemonInfos.value = {
             id: String(data.id).padStart(3, '0'),
-            name: data.name.replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()),
+            name: data.name
+                .replace(/-/g, ' ')
+                .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()),
             types: (() => {
                 const types = []
                 data.types.forEach((item) =>
@@ -169,7 +170,7 @@ onMounted(() => {
 
                 return types
             })(),
-            image: data.sprites.other.home.front_default,
+            image: data.sprites.other['official-artwork'].front_default,
             stats: (() => {
                 const stats = []
                 data.stats.forEach((item) =>
